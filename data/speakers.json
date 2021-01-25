@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Imma Valls",
+    "bio": "Senior Support Engineer en Elastic y co-organizadora de la Software Crafters Barcelona",
+    "social": [
+      "https://www.linkedin.com/in/imma-valls/"
+    ]
+  },
+  {
+    "name": "David Fernández",
+    "bio": "Data Engineer local trabajando full-time con Elastic",
+    "social": [
+      "https://twitter.com/dfernandezcalle"
+    ]
+  },
+  {
+    "name": "Ismael Hasan",
+    "bio": "Support Engineer en Elastic y co-organizador del CoruñaJUG",
+    "social": [
+      "https://www.linkedin.com/in/ismaelhasan/"
+    ]
+  },
+  {
+    "name": "Javier Parapar",
+    "bio": "Profesor en la USC con amplia experiencia en el procesado de texto",
+    "social": [
+      "https://twitter.com/jparapar"
+    ]
+  },
+  {
+    "name": "Adriana Barrachina",
+    "bio": "Scrum Master en ITNow con una interesante creando y administrando servicios Elastic",
+    "social": [
+      "https://www.linkedin.com/in/adriana-barrachina/"
+    ]
+  }
+]
