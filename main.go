@@ -55,16 +55,6 @@ func main() {
 				}
 			}
 		}
-		//if (message.Message == "!" + descriptionCommand.Name) {
-		//	commandLastRunTime, ok := lastRunTime[descriptionCommand.Id]
-		//	log.Println(commandLastRunTime, ok, time.Now().Unix() + coldDownTime)
-		//	if !ok || time.Now().Unix() >= commandLastRunTime + coldDownTime {
-		//		descriptionCommand.Handler(message)
-		//		lastRunTime[descriptionCommand.Id] = time.Now().Unix()
-		//	} else {
-		//		log.Println("Cold down", message.User, message.Message)
-		//	}
-		//}
 	})
 
 	client.OnUserStateMessage(func(message twitch.UserStateMessage) {
