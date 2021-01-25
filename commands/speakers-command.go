@@ -21,7 +21,6 @@ type Speaker struct {
 }
 
 func NewSpeakersCommand(client *twitch.Client) *Command{
-
 	jsonFile, err := os.Open("data/speakers.json")
 	defer jsonFile.Close()
 
@@ -29,20 +28,21 @@ func NewSpeakersCommand(client *twitch.Client) *Command{
 		log.Println(err)
 	}
 
-	byteValue, err := ioutil.ReadAll(jsonFile)
+	var byteValue []byte
+	byteValue, err = ioutil.ReadAll(jsonFile)
 
 	var speakers []Speaker
-	if (err != nil) {
+
+	if err == nil {
 		json.Unmarshal(byteValue, &speakers)
 	}
 
 	return &Command{
 		Id: "speakers",
-		Name: "speakers",
+		Name: "ponentes",
 		client: client,
 		handler:  func(client *twitch.Client, message twitch.PrivateMessage) error {
 			log.Printf("Speaker command: Channel %s - User %s", message.Channel, message.User.Name)
-
 			for _, speaker := range speakers {
 				var messageContent  []string
 
