@@ -9,7 +9,6 @@ import (
 	"strings"
 )
 
-// ========================== APIKeyService =========================
 type SpeakersCommand CommandInterface
 
 var _ SpeakersCommand = new(Command)

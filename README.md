@@ -56,6 +56,7 @@ Every command has its own cold down time to avoid flooding the chat
 
 * `!descripcion` Say the meetup/event description
 * `!ponentes` Say the list of meetup/event speakers
+* `!videos` Say the last video, and the youtube channel from Vigotech.json
 
 
 ## Add new command

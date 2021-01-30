@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"sergiocarracedo.es/streambot-go/commands"
+	"sergiocarracedo.es/streambot-go/vigotech"
 	"strconv"
 	"strings"
 	"time"
@@ -36,6 +37,7 @@ func main() {
 
 	commandList := commands.GetCommands(client)
 
+	vigotech.GetJson()
 
 	fmt.Println("Stating bot...")
 	coldDownTime, _ := strconv.ParseInt(os.Getenv("COMMAND_COLD_DOWN_TIME"), 10, 64)

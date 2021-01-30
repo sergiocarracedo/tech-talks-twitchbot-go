@@ -19,6 +19,7 @@ func GetCommands (client *twitch.Client) []*Command {
 	return []*Command{
 		NewDescriptionCommand(client),
 		NewSpeakersCommand(client),
+		NewVideosCommand(client),
 	}
 }
 

@@ -8,8 +8,6 @@ import (
 	"os"
 )
 
-// ========================== APIKeyService =========================
-
 type DescriptionCommand CommandInterface
 
 var _ DescriptionCommand = new(Command)
