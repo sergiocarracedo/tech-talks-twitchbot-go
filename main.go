@@ -59,26 +59,6 @@ func main() {
 		}
 	})
 
-	client.OnUserStateMessage(func(message twitch.UserStateMessage) {
-		fmt.Println("UserStateMessage", message.Channel, message.User, message.Message)
-	})
-
-	client.OnUserNoticeMessage(func(message twitch.UserNoticeMessage) {
-		fmt.Println("UserNoticeMessage", message.Channel, message.User, message.Message)
-	})
-
-	client.OnUserJoinMessage(func(message twitch.UserJoinMessage) {
-		fmt.Println("UserJoinMessage", message.Channel, message.User)
-	})
-
-	client.OnUserPartMessage(func(message twitch.UserPartMessage) {
-		fmt.Println("UserPartMessage", message.Channel, message.User)
-	})
-
-	client.OnNoticeMessage(func(message twitch.NoticeMessage) {
-		fmt.Println("NoticeMessage", message.Channel)
-	})
-
 	client.Join(os.Getenv("CHANNEL"))
 
 	sendHelpMessageEvery, _ := strconv.ParseInt(os.Getenv("COMMAND_HELP_EVERY"), 10, 64)
@@ -96,10 +76,4 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Connected")
-
-
-
-
-
 }
