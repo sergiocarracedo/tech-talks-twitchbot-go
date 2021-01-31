@@ -29,7 +29,6 @@ func NewDescriptionCommand(client *twitch.Client) *Command {
 		json.Unmarshal(byteValue, &description)
 	}
 
-
 	return &Command{
 		Id:     "description",
 		Name:   "descripcion",
@@ -50,5 +49,3 @@ func NewDescriptionCommand(client *twitch.Client) *Command {
 //
 //	return nil
 //}
-
-

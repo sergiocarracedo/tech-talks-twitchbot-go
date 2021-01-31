@@ -17,13 +17,12 @@ func help(client *twitch.Client, channel string, commandList []*commands.Command
 	var commandNames []string
 
 	for _, command := range commandList {
-		commandNames = append(commandNames, "!" + command.Name)
+		commandNames = append(commandNames, "!"+command.Name)
 	}
 
 	log.Println("Sending help message")
-	client.Say(channel, "Comandos disponibles: " + strings.Join(commandNames, ", ") + ". Solo se muestra respuesta de cada comando cada " + os.Getenv("COMMAND_COLD_DOWN_TIME") + "segundos")
+	client.Say(channel, "Comandos disponibles: "+strings.Join(commandNames, ", ")+". Solo se muestra respuesta de cada comando cada "+os.Getenv("COMMAND_COLD_DOWN_TIME")+"segundos")
 }
-
 
 func main() {
 	err := godotenv.Load()
@@ -46,10 +45,10 @@ func main() {
 		fmt.Println("PrivateMessage", message.Channel, message.User, message.Message)
 
 		for _, command := range commandList {
-			if message.Message == "!" + command.Name {
+			if message.Message == "!"+command.Name {
 				commandLastRunTime, ok := lastRunTime[command.Id]
-				log.Println(commandLastRunTime, ok, time.Now().Unix() + coldDownTime)
-				if !ok || time.Now().Unix() >= commandLastRunTime + coldDownTime {
+				log.Println(commandLastRunTime, ok, time.Now().Unix()+coldDownTime)
+				if !ok || time.Now().Unix() >= commandLastRunTime+coldDownTime {
 					command.Handler(message)
 					lastRunTime[command.Id] = time.Now().Unix()
 				} else {
@@ -65,7 +64,7 @@ func main() {
 
 	client.OnConnect(func() {
 		help(client, os.Getenv("CHANNEL"), commandList)
-		go func () {
+		go func() {
 			for _ = range time.NewTicker(time.Duration(sendHelpMessageEvery) * time.Second).C {
 				help(client, os.Getenv("CHANNEL"), commandList)
 			}

@@ -14,12 +14,12 @@ type SpeakersCommand CommandInterface
 var _ SpeakersCommand = new(Command)
 
 type Speaker struct {
-	Name string `json:"name"`
-	Bio string `json:"bio"`
+	Name   string   `json:"name"`
+	Bio    string   `json:"bio"`
 	Social []string `json:"social"`
 }
 
-func NewSpeakersCommand(client *twitch.Client) *Command{
+func NewSpeakersCommand(client *twitch.Client) *Command {
 	jsonFile, err := os.Open("data/speakers.json")
 	defer jsonFile.Close()
 
@@ -37,15 +37,15 @@ func NewSpeakersCommand(client *twitch.Client) *Command{
 	}
 
 	return &Command{
-		Id: "speakers",
-		Name: "ponentes",
+		Id:     "speakers",
+		Name:   "ponentes",
 		client: client,
-		handler:  func(client *twitch.Client, message twitch.PrivateMessage) error {
+		handler: func(client *twitch.Client, message twitch.PrivateMessage) error {
 			log.Printf("Speaker command: Channel %s - User %s", message.Channel, message.User.Name)
 			for _, speaker := range speakers {
-				var messageContent  []string
+				var messageContent []string
 
-				messageContent = append(messageContent,"🗣️ " + speaker.Name)
+				messageContent = append(messageContent, "🗣️ "+speaker.Name)
 				messageContent = append(messageContent, " => ")
 				messageContent = append(messageContent, speaker.Bio)
 
@@ -57,4 +57,3 @@ func NewSpeakersCommand(client *twitch.Client) *Command{
 		},
 	}
 }
-
