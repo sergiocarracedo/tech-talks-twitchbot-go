@@ -34,18 +34,10 @@ func NewDescriptionCommand(client *twitch.Client) *Command {
 		Name:   "descripcion",
 		client: client,
 		handler: func(client *twitch.Client, message twitch.PrivateMessage) error {
-			log.Println("Description command:", message.Channel, message.User.Name, description)
+			log.Println("Description command:", message.Channel, message.User.Name)
 			client.Say(message.Channel, description)
 
 			return nil
 		},
 	}
 }
-
-//
-//func (c *CommandDescription) Handler(message twitch.PrivateMessage) error{
-//	log.Println("Description command:", message.Channel, message.User.Name, os.Getenv("COMMAND_DESCRIPTION"))
-//	c.client.Say(message.Channel, os.Getenv("COMMAND_DESCRIPTION"))
-//
-//	return nil
-//}

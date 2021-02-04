@@ -23,6 +23,7 @@ func GetCommands(client *twitch.Client) []*Command {
 		NewSpeakersCommand(client),
 		NewVideosCommand(client, vigotechData),
 		NewEventsCommand(client, vigotechData),
+		NewSocialCommand(client),
 	}
 }
 

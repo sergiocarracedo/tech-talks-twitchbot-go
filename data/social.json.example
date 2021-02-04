@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Twitter",
+    "links": ["https://twitter.com/laretasgeek"],
+    "spacer": "\uD83D\uDC26"
+  },
+  {
+    "name": "Youtube",
+    "links": ["https://www.youtube.com/channel/UCYSy-eQm6Q02o7WiR6JTqJg"],
+    "spacer": "\uD83D\uDCFA"
+  },
+  {
+    "name": "Meetup",
+    "links": ["https://www.meetup.com/es-ES/VigoJUG", "https://www.meetup.com/es-ES/CorunaJUG"],
+    "spacer": "\uD83D\uDCFA"
+  },
+  {
+    "name": "Web",
+    "links": ["https://vigotech.org/"],
+    "spacer": "\uD83C\uDF10"
+  }
+]
