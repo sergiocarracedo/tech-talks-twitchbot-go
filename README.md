@@ -21,8 +21,13 @@ Channel where the bot will publish and observe
 Time in seconds to cold down every command, in this time the bot only will publish once for every command
 
 #### `COMMAND_HELP_EVERY`
-Time in second for sending the help message to chat
+Time in second for sending the help message to chat. **0 disables the automatic command **
 
+#### `DISABLED_COMMANDS`
+Ids of the disabled commands (separated by commas)
+
+#### `DISABLE_CHAT_LOGGER`
+If true, disables the chat logger
 
 ### Configure the commands
 
