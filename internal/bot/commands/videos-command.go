@@ -15,8 +15,6 @@ import (
 
 type VideosCommand CommandInterface
 
-var _ VideosCommand = new(Command)
-
 type Video struct {
 	Title string
 	Date  int64

@@ -9,25 +9,17 @@ import (
 	"time"
 )
 
-
-
 type Service struct {
-	client *twitch.Client
-	channel string
-	disabledCommands []string
-	lastRunTime map[string]int64
-	coldDownTime int64
+	client               *twitch.Client
+	channel              string
+	disabledCommands     []string
+	lastRunTime          map[string]int64
+	coldDownTime         int64
 	sendHelpMessageEvery int64
-	commandList []*commands.Command
+	commandList          []*commands.Command
 }
 
-var commandList []*commands.Command
-
-
 func New(client *twitch.Client, channel string, disabledCommands []string, coldDownTime int64, sendHelpMessageEvery int64) Service {
-
-	commandList := commands.GetCommands(client, disabledCommands)
-
 	vigotech.GetJson()
 
 	return Service{
@@ -37,7 +29,7 @@ func New(client *twitch.Client, channel string, disabledCommands []string, coldD
 		make(map[string]int64),
 		coldDownTime,
 		sendHelpMessageEvery,
-		commandList,
+		commands.GetCommands(client, disabledCommands),
 	}
 }
 
@@ -45,15 +37,14 @@ func (b Service) GetCommandListNames() []string {
 	return commands.ListNames(b.commandList)
 }
 
-
 func (b Service) OnPrivateMessage(message twitch.PrivateMessage) bool {
 	messageContent := strings.Trim(strings.ToLower(message.Message), " ")
 
 	// Check if message is a command and run it
 	if messageContent == "!help" || messageContent == "!ayuda" {
-		commands.Help(b.client, b.channel, commandList)
+		commands.Help(b.client, b.channel, b.commandList)
 	} else {
-		for _, command := range commandList {
+		for _, command := range b.commandList {
 			if messageContent == "!"+command.Name {
 				commandLastRunTime, ok := b.lastRunTime[command.Id]
 				log.Println(commandLastRunTime, ok, time.Now().Unix()+b.coldDownTime)
@@ -73,10 +64,10 @@ func (b Service) OnPrivateMessage(message twitch.PrivateMessage) bool {
 
 func (b Service) OnConnect() {
 	if b.sendHelpMessageEvery > 0 {
-		commands.Help(b.client, b.channel, commandList)
+		commands.Help(b.client, b.channel, b.commandList)
 		go func() {
 			for _ = range time.NewTicker(time.Duration(b.sendHelpMessageEvery) * time.Second).C {
-				commands.Help(b.client, b.channel, commandList)
+				commands.Help(b.client, b.channel, b.commandList)
 			}
 		}()
 	}

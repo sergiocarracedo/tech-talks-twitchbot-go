@@ -40,8 +40,10 @@ Build and then run
 
 ### Linux / MacOs
 ```bash
-$ go build -o bot
-$ ./streambot-go
+$ go build cmd/main.go -o bot
+$ ./bot
+# or
+$ go run cmd/main.go
 ```
 
 ### Windows
@@ -52,17 +54,29 @@ $ bot.exe
 
 
 ## Features
-
 The bot will say to the chat on start and every `COMMAND_HELP_EVERY`s the list of the available commands
+If its 0 no help command
 Every command has its own cold down time to avoid flooding the chat 
 
 
 ## Current commands
 
-* `!descripcion` Say the meetup/event description
 * `!ponentes` Say the list of meetup/event speakers
 * `!videos` Say the last video, and the youtube channel from Vigotech.json or /data/videos.json
 * `!eventos` Say upcomming events Vigotech.json or /data/events.json
+
+### Text command
+Editing `data/text.json` you can define multiple commands that responds with a simple text:
+```json
+[
+  {
+    "command": "descripcion",
+    "text": "2021 es un año que tiene ...."
+  }
+]
+```
+for example:
+    * `!descripcion` Say the meetup/event description
 
 
 ## Add new command

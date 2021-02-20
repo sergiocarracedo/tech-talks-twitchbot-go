@@ -10,7 +10,7 @@ import (
 
 type Service struct {
 	client *twitch.Client
-	db *sqlx.DB
+	db     *sqlx.DB
 }
 
 func New(client *twitch.Client, db *sqlx.DB) (*Service, error) {
@@ -52,7 +52,8 @@ func New(client *twitch.Client, db *sqlx.DB) (*Service, error) {
 		"premium INTEGER," +
 		"subscriber INTEGER," +
 		"type TEXT," +
-		"time INT" +
+		"time INTEGER," +
+		"notified INTEGER" +
 		")")
 	if err != nil {
 		log.Printf(err.Error())
@@ -104,10 +105,9 @@ func (s *Service) OnPrivateMessage(message twitch.PrivateMessage) error {
 	return nil
 }
 
-
 func (s *Service) OnUserNoticeMessage(message twitch.UserNoticeMessage) error {
 	query, args, _ := sq.
-		Insert("messages").
+		Insert("notifications").
 		Columns(
 			"channel",
 			"room_id",
@@ -123,7 +123,8 @@ func (s *Service) OnUserNoticeMessage(message twitch.UserNoticeMessage) error {
 			"premium",
 			"type",
 			"time",
-			"subscriber").
+			"subscriber",
+			"notified").
 		Values(
 			message.Channel,
 			message.RoomID,
@@ -139,7 +140,8 @@ func (s *Service) OnUserNoticeMessage(message twitch.UserNoticeMessage) error {
 			message.User.Badges["premium"],
 			message.RawType,
 			message.Time.Unix(),
-			message.User.Badges["subscriber"]).
+			message.User.Badges["subscriber"],
+			0).
 		ToSql()
 	_, err := s.db.Exec(query, args...)
 

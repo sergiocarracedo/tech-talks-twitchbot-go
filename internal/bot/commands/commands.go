@@ -59,13 +59,15 @@ func contains(s []string, str string) bool {
 func GetCommands(client *twitch.Client, disabledCommands []string) []*Command {
 	vigotechData, _ := vigotech.GetData()
 
-	availableCommands := []*Command{
-		NewDescriptionCommand(client),
+	var availableCommands []*Command
+	availableCommands = append(availableCommands, NewTextCommand(client)...)
+
+	availableCommands = append(availableCommands, []*Command{
 		NewSpeakersCommand(client),
 		NewVideosCommand(client, vigotechData),
 		NewEventsCommand(client, vigotechData),
 		NewSocialCommand(client),
-	}
+	}...)
 
 	var commands []*Command
 

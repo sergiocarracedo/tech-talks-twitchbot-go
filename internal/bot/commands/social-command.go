@@ -14,9 +14,9 @@ type SocialCommand CommandInterface
 var _ SocialCommand = new(Command)
 
 type Social struct {
-	Name string `json:"name"`
-	Links []string `json:"links"`
-	Spacer string `json:"spacer"`
+	Name   string   `json:"name"`
+	Links  []string `json:"links"`
+	Spacer string   `json:"spacer"`
 }
 
 func NewSocialCommand(client *twitch.Client) *Command {
@@ -49,7 +49,7 @@ func NewSocialCommand(client *twitch.Client) *Command {
 				if item.Spacer != "" {
 					messageItemContent = append(messageItemContent, item.Spacer)
 				}
-				messageItemContent = append(messageItemContent, item.Name + " => ")
+				messageItemContent = append(messageItemContent, item.Name+" => ")
 				messageItemContent = append(messageItemContent, strings.Join(item.Links, " "))
 
 				messageContent = append(messageContent, strings.Join(messageItemContent, " "))

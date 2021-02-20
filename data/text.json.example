@@ -1,0 +1,6 @@
+[
+  {
+    "command": "command_name_without_!",
+    "text": "Command response text"
+  }
+]
