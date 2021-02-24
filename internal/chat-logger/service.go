@@ -1,136 +1,68 @@
 package chatLogger
 
 import (
-	sq "github.com/Masterminds/squirrel"
+	"context"
 	"github.com/gempir/go-twitch-irc/v2"
-	"github.com/jmoiron/sqlx"
-	_ "github.com/mattn/go-sqlite3"
 	"log"
+	"sergiocarracedo.es/streambot-go/internal/messages"
+	"sergiocarracedo.es/streambot-go/internal/notifications"
 )
 
 type Service struct {
-	client *twitch.Client
-	db     *sqlx.DB
+	client                  *twitch.Client
+	notificationsRepository notifications.NotificationsRepository
+	messagesRepository      messages.MessagesRepository
 }
 
-func New(client *twitch.Client, db *sqlx.DB) (*Service, error) {
-	_, err := db.Exec("CREATE TABLE IF NOT EXISTS main.messages(" +
-		"id INTEGER PRIMARY KEY," +
-		"channel TEXT," +
-		"user TEXT," +
-		"message TEXT," +
-		"twitch_id TEXT, " +
-		"room_id TEXT," +
-		"user_id TEXT," +
-		"user_display_name TEXT," +
-		"user_color TEXT," +
-		"broadcaster INTEGER," +
-		"premium INTEGER," +
-		"type TEXT," +
-		"time INT," +
-		"action INT," +
-		"bits INT" +
-		")")
-	if err != nil {
-		log.Printf(err.Error())
-		return &Service{}, err
-	}
-
-	_, err = db.Exec("CREATE TABLE IF NOT EXISTS main.notifications(" +
-		"id INTEGER PRIMARY KEY," +
-		"channel TEXT," +
-		"user TEXT," +
-		"message_id TEXT," +
-		"message TEXT," +
-		"system_message TEXT," +
-		"twitch_id TEXT, " +
-		"room_id TEXT," +
-		"user_id TEXT," +
-		"user_display_name TEXT," +
-		"user_color TEXT," +
-		"broadcaster INTEGER," +
-		"premium INTEGER," +
-		"subscriber INTEGER," +
-		"type TEXT," +
-		"time INTEGER," +
-		"notified INTEGER" +
-		")")
-	if err != nil {
-		log.Printf(err.Error())
-		return &Service{}, err
-	}
-
-	return &Service{client, db}, nil
+func New(
+	client *twitch.Client,
+	notificationsRepository notifications.NotificationsRepository,
+	messagesRepository messages.MessagesRepository,
+) (*Service, error) {
+	return &Service{
+		client,
+		notificationsRepository,
+		messagesRepository,
+	}, nil
 }
 
 func (s *Service) OnPrivateMessage(message twitch.PrivateMessage) error {
-	query, args, _ := sq.
-		Insert("messages").
-		Columns(
-			"channel",
-			"room_id",
-			"twitch_id",
-			"user_id",
-			"user",
-			"user_display_name",
-			"user_color",
-			"message",
-			"broadcaster",
-			"premium",
-			"type",
-			"time",
-			"action",
-			"bits").
-		Values(
+	err := s.messagesRepository.Save(
+		context.Background(),
+		messages.Message{
+			0,
+			message.ID,
 			message.Channel,
 			message.RoomID,
-			message.ID,
-			message.User.ID,
 			message.User.Name,
+			message.User.ID,
 			message.User.DisplayName,
 			message.User.Color,
 			message.Message,
 			message.User.Badges["broadcaster"],
 			message.User.Badges["premium"],
 			message.RawType,
-			message.Time.Unix(),
+			message.Time,
 			message.Action,
-			message.Bits).
-		ToSql()
-	_, err := s.db.Exec(query, args...)
+			message.Bits,
+		})
 
 	if err != nil {
+		log.Println(err.Error())
 		return err
 	}
 	return nil
 }
 
 func (s *Service) OnUserNoticeMessage(message twitch.UserNoticeMessage) error {
-	query, args, _ := sq.
-		Insert("notifications").
-		Columns(
-			"channel",
-			"room_id",
-			"twitch_id",
-			"user_id",
-			"user",
-			"user_display_name",
-			"user_color",
-			"message",
-			"message_id",
-			"system_message",
-			"broadcaster",
-			"premium",
-			"type",
-			"time",
-			"subscriber",
-			"notified").
-		Values(
+	err := s.notificationsRepository.Save(
+		notifications.Notification{
+			0,
+			message.ID,
 			message.Channel,
 			message.RoomID,
-			message.ID,
-			message.User.ID,
 			message.User.Name,
+			message.User.ID,
 			message.User.DisplayName,
 			message.User.Color,
 			message.Message,
@@ -138,14 +70,14 @@ func (s *Service) OnUserNoticeMessage(message twitch.UserNoticeMessage) error {
 			message.SystemMsg,
 			message.User.Badges["broadcaster"],
 			message.User.Badges["premium"],
-			message.RawType,
-			message.Time.Unix(),
 			message.User.Badges["subscriber"],
-			0).
-		ToSql()
-	_, err := s.db.Exec(query, args...)
+			message.RawType,
+			message.Time,
+			0,
+		})
 
 	if err != nil {
+		log.Println(err.Error())
 		return err
 	}
 	return nil

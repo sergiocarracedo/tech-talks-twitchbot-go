@@ -2,14 +2,23 @@ package bootstrap
 
 import (
 	"github.com/gempir/go-twitch-irc/v2"
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/jmoiron/sqlx"
 	"log"
 	"os"
 	"sergiocarracedo.es/streambot-go/internal/bot"
 	chatLogger "sergiocarracedo.es/streambot-go/internal/chat-logger"
+	"sergiocarracedo.es/streambot-go/internal/notifications"
+	_ "sergiocarracedo.es/streambot-go/internal/messages"
+	"sergiocarracedo.es/streambot-go/internal/platform/storage"
+	"sergiocarracedo.es/streambot-go/internal/server"
 	"sergiocarracedo.es/streambot-go/internal/utils"
 	"strconv"
+)
+
+const (
+	host = "localhost"
+	port = 4000
 )
 
 func Run() error {
@@ -21,10 +30,28 @@ func Run() error {
 		return err
 	}
 
+	// Web server
+	server := server.New(host, port)
+
 	// Twitch client
 	client := twitch.NewClient(
 		os.Getenv("BOT_USERNAME"),
 		os.Getenv("TMI_OAUTH_TOKEN"))
+
+	// Repositories
+	notificationsRepository := storage.NewNotificationsRepository(db)
+	messagesRepository := storage.NewMessagesRepository(db)
+
+	err = notificationsRepository.CreateTables()
+	if err != nil {
+		return err
+	}
+
+	messagesRepository.CreateTables()
+	if err != nil {
+		return err
+	}
+
 
 	// Bot
 	disableBot, _ := utils.GetEnvBool("DISABLE_BOT")
@@ -55,16 +82,30 @@ func Run() error {
 	if !disableChatLogger {
 		chatLoggerService, err = chatLogger.New(
 			client,
-			db)
+			notificationsRepository,
+			messagesRepository,
+		)
 		if err != nil {
 			log.Printf(utils.Colors.Red, err.Error(), utils.Colors.Reset)
 			return err
 		}
 	}
 
+	// Notifications
+	notifications.SetupRoutes(server)
+	go notifications.SendMessages()
+
+
+	// Run web server
+	go func() {
+		server.Run()
+	}()
+
+
+
 	// On Private Message
 	client.OnPrivateMessage(func(message twitch.PrivateMessage) {
-		log.Println(utils.Colors.Blue, "Private Message", message.Channel, message.User.Name, message.Message, utils.Colors.Reset)
+		log.Println(utils.Colors.Blue + "Private Message", message.Channel, message.User.Name, message.Message, utils.Colors.Reset)
 
 		if !disableBot {
 			published := botService.OnPrivateMessage(message)
@@ -100,6 +141,7 @@ func Run() error {
 
 	})
 
+	log.Println("Join Twitch client to channel:", os.Getenv("CHANNEL"))
 	client.Join(os.Getenv("CHANNEL"))
 
 	return client.Connect()

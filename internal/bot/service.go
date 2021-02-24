@@ -2,7 +2,6 @@ package bot
 
 import (
 	"github.com/gempir/go-twitch-irc/v2"
-	"log"
 	"sergiocarracedo.es/streambot-go/internal/bot/commands"
 	"sergiocarracedo.es/streambot-go/vigotech"
 	"strings"
@@ -47,7 +46,6 @@ func (b Service) OnPrivateMessage(message twitch.PrivateMessage) bool {
 		for _, command := range b.commandList {
 			if messageContent == "!"+command.Name {
 				commandLastRunTime, ok := b.lastRunTime[command.Id]
-				log.Println(commandLastRunTime, ok, time.Now().Unix()+b.coldDownTime)
 				if !ok || time.Now().Unix() >= commandLastRunTime+b.coldDownTime {
 					command.Handler(message)
 					b.lastRunTime[command.Id] = time.Now().Unix()
