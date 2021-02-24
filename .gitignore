@@ -17,6 +17,8 @@
 # vendor/
 .idea
 data/*.json
+data/db.sqlite
+data/db.sqlite-journal
 
 .env
 .env.local
